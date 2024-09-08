@@ -1,6 +1,9 @@
 # 쿠버네티스 클러스터에서 사용할 수 있는 오브젝트 목록 조회
 kubectl api-resources 
 
+# 모든 속성들을 다 기억할 수 없기 때문에, explain 명령어를 통해 어떤 리소스를 작성할때 설명을 얻을 수 있는 명령어.
+kubectl explain ~
+
 # 쿠버네티스 오브젝트의 설명과 1레벨 속성들의 설명
 # apiVersion, kind, metadata, spec, status
 kubectl explain pod

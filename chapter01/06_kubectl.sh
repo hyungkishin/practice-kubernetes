@@ -32,7 +32,7 @@ kubectl diff -f deployment.yaml
 kubectl edit deployment/nginx-deployment: 
 
 # 로컬 포트는 파드에서 실행 중인 컨테이너 포트로 포워딩
-kubectl port-forward pod/nginx-deployment-74bfc88f4d-fkfjc 8080:80
+kubectl port-forward pod/nginx-deployment-f48cb95c4-crqqn 8080:80
 
 # 현재 실행중인 컨테이너 프로세스에 접속하여 로그 확인
 kubectl attach deployment/nginx-deployment -c nginx

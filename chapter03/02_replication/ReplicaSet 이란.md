@@ -64,3 +64,18 @@ blue-replicaset-tkmm2   1/1     Running   0          108s   10.4.2.27   gke-my-c
 
 ### describe rs blue-replicaset 말고도 이벤트를 확인하는 방법이 있다.
 - kubectl get events --sort-by=.metadata.creationTimestamp
+
+
+### 기존에 생성한 Pod 을 ReplicaSet 으로 관리한다면 ?
+- app=blue-app 레이블을 가진 단독 pod 을 생성
+  - kubectl apply -f blue-app.yaml
+- kubectl apply -f source/blue-app.yaml
+  - pod/blue-app created <- 오케이 잘 뜨는것 확인했고 
+- kubectl apply -f source/replicaset.yaml
+  - replicaset.apps/blue-replicaset created
+- ![img.png](img.png)
+  - 정말 지정된 replica 수 만큼만 뜨는것을 확인했다.
+
+> ReplicaSet 이 Pod 2개만 만든 이유는 자신이 관리하는 pod 의 수를 replicas 를 넘지 않게 관리하기 떄문이다. <br/>
+> 단 . 기 생성된 Pod 의 레이블이 replicaSet 의 Pod Selector 와 같다면 관리 범주에 들엉h므로 Pod Selector 를 설계할 때 주의해야 한다.
+

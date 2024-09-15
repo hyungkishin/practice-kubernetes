@@ -34,3 +34,33 @@ spec: # 사용자가 원하는 Pod의 바람직한 상태
   - 여러 노드에 걸쳐 배포된 Pod Up/Down 상태를 감시하고 replicas 수만큼 실행을 보장한다.
 - ReplicaSet 의 spec selector matchLabels 는 Pod Template 부분의 tspec.template.metadata.labels 와 같아야한다.
 - spec.replicas 를 선언하지 않으면 기본값은 1이다.
+
+### 실습
+> kubectl get rs blue-replicaset -o wide <br/>
+NAME              DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES                   SELECTOR <br/>
+blue-replicaset   3         3         3       18s   blue-app     yoonjeong/blue-app:1.0   app=blue-app <br/>
+
+- rs: 조회할 리소스 타입을 지정. 여기서는 ReplicaSet을 의미한다
+- blue-replicaset: 조회할 특정 ReplicaSet의 이름
+- -o wide: 출력 형식을 지정한다. wide 옵션은 기본 출력에 더해 추가적인 정보를 포함한 넓은 형식으로 출력
+
+> kubectl get pod -o wide <br/>
+NAME                    READY   STATUS    RESTARTS   AGE    IP          NODE                                        NOMINATED NODE   READINESS GATES <br/>
+blue-replicaset-pc5cb   1/1     Running   0          109s   10.4.2.28   gke-my-cluster-default-pool-34e6c418-cl3d   <none>           <none> <br/>
+blue-replicaset-pg7r9   1/1     Running   0          109s   10.4.0.14   gke-my-cluster-default-pool-34e6c418-0m4r   <none>           <none> <br/>
+blue-replicaset-tkmm2   1/1     Running   0          108s   10.4.2.27   gke-my-cluster-default-pool-34e6c418-cl3d   <none>           <none> <br/>
+
+- NAME 을 잘 보면 blue-replicaset-pc5cb 
+
+> kubectl describe rs blue-replicaset <- replicaset 에서 발생한 이벤트를 확인해보자 <br/>
+> Events: <br/>
+> Type    Reason            Age   From                   Message <br/>
+>  ----    ------            ----  ----                   -------  <br/>
+> Normal  SuccessfulCreate  4m4s  replicaset-controller  Created pod: blue-replicaset-pc5cb <br/>
+  Normal  SuccessfulCreate  4m3s  replicaset-controller  Created pod: blue-replicaset-pg7r9 <br/>
+  Normal  SuccessfulCreate  4m3s  replicaset-controller  Created pod: blue-replicaset-tkmm2 <br/>
+
+> 3 개의 pod 을 replicaset-controller 가 생성했다는것을 확인했다. <br/>
+
+### describe rs blue-replicaset 말고도 이벤트를 확인하는 방법이 있다.
+- kubectl get events --sort-by=.metadata.creationTimestamp

@@ -4,6 +4,8 @@ metadata:
   name: my-app
   labels:
     app: my-app
+  annotations:
+    kubernetes.io/change-cause: "initial image 1.0"
   # 배포 사유 작성하기 "initial image 1.0"
 spec:
   replicas: 3

@@ -6,7 +6,22 @@
 # Service 셀렉터: service=order, project=snackbar
 # Service 포트: 80
 # 컨테이너 포트: 8080
-
+apiVersion: v1
+kind: Service
+metadata:
+  name: order  # Service 이름
+  namespace: snackbar  # Service가 속한 네임스페이스
+  labels:
+    service: order  # Service 레이블
+    project: snackbar  # Project 레이블
+spec:
+  type: ClusterIP  # Service 타입: ClusterIP (내부 클러스터 IP로만 접근 가능)
+  selector:
+    service: order  # 이 Service가 라우팅할 파드를 선택하는 셀렉터
+    project: snackbar  # 셀렉터의 두 번째 조건
+  ports:
+    - port: 80  # Service가 노출할 포트
+      targetPort: 8080  # 파드 내 컨테이너의 포트
 ---
 
 # Service API 버전: v1
@@ -17,67 +32,101 @@
 # Service 셀렉터: service=payment, project=snackbar
 # Service 포트: 80
 # 컨테이너 포트: 8080
-
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment  # Service 이름
+  namespace: snackbar  # Service가 속한 네임스페이스
+  labels:
+    service: payment  # Service 레이블
+    project: snackbar  # Project 레이블
+spec:
+  type: ClusterIP  # Service 타입: ClusterIP (내부 클러스터 IP로만 접근 가능)
+  selector:
+    service: payment  # 이 Service가 라우팅할 파드를 선택하는 셀렉터
+    project: snackbar  # 셀렉터의 두 번째 조건
+  ports:
+    - port: 80  # Service가 노출할 포트
+      targetPort: 8080  # 파드 내 컨테이너의 포트
 ---
 
+# Deployment API 버전: apps/v1
+# Deployment 이름: order
+# Deployment 네임스페이스: snackbar
+# Deployment 레이블: service=order, project=snackbar
+# 파드 레플리카 수: 2
+# 파드 셀렉터: service=order, project=snackbar
+# 컨테이너 이름: order
+# 컨테이너 이미지: yoonjeong/order:1.0
+# 컨테이너 포트: 8080
+# 리소스 제한: 메모리 64Mi, CPU 50m
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order
-  namespace: snackbar
+  name: order  # Deployment 이름
+  namespace: snackbar  # Deployment가 속한 네임스페이스
   labels:
-    service: order
-    project: snackbar
+    service: order  # Deployment 레이블
+    project: snackbar  # Project 레이블
 spec:
-  replicas: 2
+  replicas: 2  # 파드 레플리카 수
   selector:
     matchLabels:
-      service: order
-      project: snackbar
+      service: order  # 이 Deployment가 관리하는 파드를 선택하는 셀렉터
+      project: snackbar  # 셀렉터의 두 번째 조건
   template:
     metadata:
       labels:
-        service: order
-        project: snackbar
+        service: order  # 파드 레이블
+        project: snackbar  # Project 레이블
     spec:
       containers:
-      - name: order
-        image: yoonjeong/order:1.0
-        ports:
-        - containerPort: 8080
-        resources:
-          limits:
-            memory: "64Mi"
-            cpu: "50m"
+        - name: order  # 컨테이너 이름
+          image: yoonjeong/order:1.0  # 컨테이너 이미지
+          ports:
+            - containerPort: 8080  # 컨테이너 포트
+          resources:
+            limits:
+              memory: "64Mi"  # 메모리 제한
+              cpu: "50m"  # CPU 제한
+---
 
---- 
-
+# Deployment API 버전: apps/v1
+# Deployment 이름: payment
+# Deployment 네임스페이스: snackbar
+# Deployment 레이블: service=payment, project=snackbar
+# 파드 레플리카 수: 2
+# 파드 셀렉터: service=payment, project=snackbar
+# 컨테이너 이름: payment
+# 컨테이너 이미지: yoonjeong/payment:1.0
+# 컨테이너 포트: 8080
+# 리소스 제한: 메모리 64Mi, CPU 50m
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payment
-  namespace: snackbar
+  name: payment  # Deployment 이름
+  namespace: snackbar  # Deployment가 속한 네임스페이스
   labels:
-    service: payment
-    project: snackbar
+    service: payment  # Deployment 레이블
+    project: snackbar  # Project 레이블
 spec:
-  replicas: 2
+  replicas: 2  # 파드 레플리카 수
   selector:
     matchLabels:
-      service: payment
-      project: snackbar
+      service: payment  # 이 Deployment가 관리하는 파드를 선택하는 셀렉터
+      project: snackbar  # 셀렉터의 두 번째 조건
   template:
     metadata:
       labels:
-        service: payment
-        project: snackbar
+        service: payment  # 파드 레이블
+        project: snackbar  # Project 레이블
     spec:
       containers:
-      - name: payment
-        image: yoonjeong/payment:1.0
-        ports:
-        - containerPort: 8080
-        resources:
-          limits:
-            memory: "64Mi"
-            cpu: "50m"
+        - name: payment  # 컨테이너 이름
+          image: yoonjeong/payment:1.0  # 컨테이너 이미지
+          ports:
+            - containerPort: 8080  # 컨테이너 포트
+          resources:
+            limits:
+              memory: "64Mi"  # 메모리 제한
+              cpu: "50m"  # CPU 제한
